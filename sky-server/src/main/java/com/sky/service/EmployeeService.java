@@ -29,4 +29,8 @@ public interface EmployeeService {
      */
     PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
 
+    /**
+     * 启用/禁用员工账号
+     */
+    void operateAccountStatus(Integer status, Long id);
 }

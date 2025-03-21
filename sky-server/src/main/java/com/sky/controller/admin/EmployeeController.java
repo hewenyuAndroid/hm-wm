@@ -98,4 +98,18 @@ public class EmployeeController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 启用/禁用员工账号
+     *
+     * @param status 状态 1:启用 0:禁用
+     * @param id     员工id
+     * @return 操作结果
+     */
+    @PostMapping("/status/{status}")
+    public Result<Void> operateAccountStatus(@PathVariable("status") Integer status, Long id) {
+        log.info("EmployeeController: status(), status: {}， id={}", status, id);
+        employeeService.operateAccountStatus(status, id);
+        return Result.success();
+    }
+
 }
