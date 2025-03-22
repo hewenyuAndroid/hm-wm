@@ -131,7 +131,7 @@ public class EmployeeController {
      * @param employeeDTO 目标员工信息
      * @return 操作结果
      */
-    @PostMapping("/update")
+    @PutMapping
     public Result<Void> updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
         log.info("EmployeeController: updateEmployee(), employeeDTO: {}", employeeDTO);
         employeeService.updateEmployee(employeeDTO);
