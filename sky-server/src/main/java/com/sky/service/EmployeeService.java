@@ -10,6 +10,7 @@ public interface EmployeeService {
 
     /**
      * 员工登录
+     *
      * @param employeeLoginDTO
      * @return
      */
@@ -40,4 +41,11 @@ public interface EmployeeService {
      * @param id 员工id
      */
     Employee getEmployeeById(Long id);
+
+    /**
+     * 编辑员工信息
+     *
+     * @param employeeDTO 需要修改的目标信息
+     */
+    void updateEmployee(EmployeeDTO employeeDTO);
 }

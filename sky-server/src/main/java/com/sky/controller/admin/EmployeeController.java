@@ -125,5 +125,17 @@ public class EmployeeController {
         return Result.success(employee);
     }
 
+    /**
+     * 编辑员工信息
+     *
+     * @param employeeDTO 目标员工信息
+     * @return 操作结果
+     */
+    @PostMapping("/update")
+    public Result<Void> updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("EmployeeController: updateEmployee(), employeeDTO: {}", employeeDTO);
+        employeeService.updateEmployee(employeeDTO);
+        return Result.success();
+    }
 
 }

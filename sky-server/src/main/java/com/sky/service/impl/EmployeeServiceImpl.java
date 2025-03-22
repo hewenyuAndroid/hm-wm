@@ -13,11 +13,13 @@ import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
+import com.sky.exception.UserNotExitException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -119,6 +121,17 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setPassword("");
         }
         return employee;
+    }
+
+    @Override
+    public void updateEmployee(EmployeeDTO employeeDTO) {
+        Long id = employeeDTO.getId();
+        Employee employee = employeeMapper.getEmployeeById(id);
+        if (employee == null) {
+            throw new UserNotExitException(String.format("用户信息不存在，id=%d", id));
+        }
+        BeanUtils.copyProperties(employeeDTO, employee);
+        employeeMapper.update(employee);
     }
 
 }
