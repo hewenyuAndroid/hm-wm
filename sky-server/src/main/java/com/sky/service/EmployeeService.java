@@ -33,4 +33,11 @@ public interface EmployeeService {
      * 启用/禁用员工账号
      */
     void operateAccountStatus(Integer status, Long id);
+
+    /**
+     * 根据员工id查询员工信息
+     *
+     * @param id 员工id
+     */
+    Employee getEmployeeById(Long id);
 }

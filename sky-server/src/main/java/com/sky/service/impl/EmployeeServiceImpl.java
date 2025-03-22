@@ -110,4 +110,15 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .build();
         employeeMapper.update(employee);
     }
+
+    @Override
+    public Employee getEmployeeById(Long id) {
+        Employee employee = employeeMapper.getEmployeeById(id);
+        if (employee != null) {
+            // 如果员工信息不为空，隐藏密码信息
+            employee.setPassword("");
+        }
+        return employee;
+    }
+
 }

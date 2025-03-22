@@ -112,4 +112,18 @@ public class EmployeeController {
         return Result.success();
     }
 
+    /**
+     * 根据员工id查询员工信息
+     *
+     * @param id 需要查询的员工id
+     * @return 查询结果
+     */
+    @GetMapping("/{id}")
+    public Result<Employee> queryEmployeeById(@PathVariable("id") Long id) {
+        log.info("EmployeeController: queryEmployeeById(), id: {}", id);
+        Employee employee = employeeService.getEmployeeById(id);
+        return Result.success(employee);
+    }
+
+
 }
