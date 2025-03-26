@@ -2,12 +2,16 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.MessageConstant;
+import com.sky.constant.StatusConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
+import com.sky.mapper.SetMealDishMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
@@ -31,6 +35,9 @@ public class DishServiceImpl implements DishService {
 
     @Autowired
     private DishFlavorMapper dishFlavorMapper;
+
+    @Autowired
+    private SetMealDishMapper setMealDishMapper;
 
     /**
      * 批量插入菜品数据
@@ -67,5 +74,31 @@ public class DishServiceImpl implements DishService {
         PageHelper.startPage(pageQueryDTO.getPage(), pageQueryDTO.getPageSize());
         Page<DishVO> page = dishMapper.pageQuery(pageQueryDTO);
         return new PageResult(page.getTotal(), page.getResult());
+    }
+
+    @Transactional
+    @Override
+    public void batchDelete(List<Long> ids) {
+        // 1. 判断菜品是否起售，起售的菜品不能删除
+        ids.forEach(id -> {
+            Dish dish = dishMapper.getById(id);
+            if (dish.getStatus() == StatusConstant.ENABLE) {
+                // 当前菜品处于起售中，直接抛异常
+                throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
+            }
+        });
+        // 2. 判断菜品是否被菜单管理，关联的菜品不能删除
+        List<Long> setMealIdsByDishIds = setMealDishMapper.getSetMealIdsByDishIds(ids);
+        if (setMealIdsByDishIds != null && !setMealIdsByDishIds.isEmpty()) {
+            // 菜品关联了菜单，不能被删除
+            throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
+        }
+        // 3. 删除菜品表中的数据
+        ids.forEach(dishId -> {
+            dishMapper.deleteById(dishId);
+            //4 .删除菜品关联的口味数据
+            dishFlavorMapper.deleteByDishId(dishId);
+        });
+
     }
 }
