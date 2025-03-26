@@ -28,4 +28,12 @@
         order by update_time desc
     </select>
 
+    <!-- void batchDeleteByIds(@Param("dishIds") List<Long> ids); -->
+    <delete id="batchDeleteByIds" parameterType="java.lang.Long">
+        delete from dish where id in
+        <foreach collection="dishIds" item="dishId" open="(" close=")" separator=",">
+            #{dishId}
+        </foreach>
+    </delete>
+
 </mapper>
